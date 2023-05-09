@@ -1,5 +1,5 @@
 import sys
-import socket
+import socket, pickle
 import config
 from threading import Thread
 
@@ -16,14 +16,23 @@ print(
 def listen_to_client(cs):
     while True:
         try:
-            msg = cs.recv(1024).decode()
+            data = cs.recv(4096)
+            payload = pickle.loads(data)
+            if(payload.request == "who is online"):
+                users = []
+                for c_socket in c_sockets:
+                    users.append(c_socket.getpeername())
+                payload = pickle.dumps(users)
+                for c_socket in c_sockets:
+                    c_socket.send(payload)
+            else:
+                payload.message = payload.message.replace(config.sep, ": ")
+                payload = pickle.dumps(payload)
+                print("✅ — Publishing packets to client sockets...")
+                for c_socket in c_sockets:
+                    c_socket.send(payload)
         except Exception as e:
             c_sockets.remove(cs)
-        else:
-            msg = msg.replace(config.sep, ": ")
-            print("✅ — Publishing packets to client sockets...")
-        for c_socket in c_sockets:
-            c_socket.send(msg.encode())
 
 
 while True:
