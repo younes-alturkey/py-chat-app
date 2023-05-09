@@ -1,8 +1,8 @@
-import sys
-import socket
-import pickle
-import config
 from threading import Thread
+import config
+import pickle
+import socket
+import sys
 
 c_sockets = set()
 s = socket.socket()
@@ -10,7 +10,7 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind((config.WS_SERVER_HOST, config.SERVER_SIDE_PORT_1))
 s.listen(5)
 print(
-    f"\n👺 — Accepting msgs from Load Balancer as localhost:{config.SERVER_SIDE_PORT_1}...\n")
+    f"\n🎃 — Accepting msgs from Load Balancer as localhost:{config.SERVER_SIDE_PORT_1}...\n")
 
 
 # receive messages from load balancer client

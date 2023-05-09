@@ -10,7 +10,7 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind((config.WS_SERVER_HOST, config.SERVER_SIDE_PORT_3))
 s.listen(5)
 print(
-    f"\n🤖 — Accepting msgs from Load Balancer as localhost:{config.SERVER_SIDE_PORT_3}...\n")
+    f"\n👽 — Accepting msgs from Load Balancer as localhost:{config.SERVER_SIDE_PORT_3}...\n")
 
 
 # receive messages from load balancer
