@@ -12,6 +12,7 @@ def rr(iter):
 class LoadBalancer(object):
     flow_table = dict()
     sockets = list()
+    onlineUsers = list()
 
     def __init__(self, ip, port, algo='random'):
         self.ip = ip
@@ -26,12 +27,10 @@ class LoadBalancer(object):
         print('🖧  — Listening to clients as %s ...\n' %
               (self.cs_socket.getsockname(),))
         self.cs_socket.listen(10)
-        # set up the list of sockets to monitor
         self.sockets.append(self.cs_socket)
 
     def start(self):
         while True:
-            # use select to wait for input on any of the sockets
             read_list, write_list, exception_list = select.select(
                 self.sockets, [], [])
             for sock in read_list:
@@ -48,7 +47,7 @@ class LoadBalancer(object):
                             self.on_close(sock)
                             break
                     except:
-                        sock.on_close(sock)
+                        self.on_close(sock)
                         break
 
     # create a new client socket and connects to one of the backend servers.
@@ -69,6 +68,8 @@ class LoadBalancer(object):
                   (ss_socket.getsockname(),))
             print('✅ — Connected to server %s %s.' % (
                 ss_socket.getsockname(), (socket.gethostbyname(server_ip), server_port)))
+            self.onlineUsers.append(ss_socket.getsockname()[1])
+            print('online users are: ', self.onlineUsers)
         except:
             print("💩 — Couldn't establish connection with server socket, err: %s" %
                   sys.exc_info()[0])
@@ -100,6 +101,8 @@ class LoadBalancer(object):
 
         self.sockets.remove(sock)
         self.sockets.remove(ss_socket)
+        self.onlineUsers.remove(ss_socket.getsockname()[1])
+        print('online users are: ', self.onlineUsers)
 
         sock.close()
         ss_socket.close()
