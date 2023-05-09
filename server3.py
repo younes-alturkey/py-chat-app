@@ -8,8 +8,11 @@ s = socket.socket()
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind((config.WS_SERVER_HOST, config.SERVER_SIDE_PORT_3))
 s.listen(5)
-print(f"\n🤖 — Accepting msgs from Load Balancer as localhost:{config.SERVER_SIDE_PORT_3}...\n")
+print(
+    f"\n🤖 — Accepting msgs from Load Balancer as localhost:{config.SERVER_SIDE_PORT_3}...\n")
 
+
+# receive messages from load balancer
 def listen_to_client(cs):
     while True:
         try:
@@ -24,6 +27,7 @@ def listen_to_client(cs):
 
 
 while True:
+    # block until a load balancer client connects to the server and then returns a new socket object, and the address
     c_socket, c_address = s.accept()
     print(f"\n✅ — {c_address} is now connected.\n")
     c_sockets.add(c_socket)
