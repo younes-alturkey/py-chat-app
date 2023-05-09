@@ -26,3 +26,9 @@ colors = [ Fore.LIGHTCYAN_EX, Fore.WHITE, Fore.CYAN, Fore.GREEN,
            Fore.YELLOW, Fore.BLUE, Fore.LIGHTWHITE_EX,
            Fore.LIGHTMAGENTA_EX, Fore.LIGHTRED_EX, Fore.LIGHTGREEN_EX, Fore.MAGENTA
          ]
+
+class Payload:
+    message = "Generic message!"
+    mode = "group"
+    targetId = ""
+    request = ""
