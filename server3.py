@@ -1,4 +1,4 @@
-import sys
+import sqlite3
 import socket
 import pickle
 import config
@@ -10,7 +10,7 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind((config.WS_SERVER_HOST, config.SERVER_SIDE_PORT_3))
 s.listen(5)
 print(
-    f"\n👽 — Accepting msgs from Load Balancer as localhost:{config.SERVER_SIDE_PORT_3}...\n")
+    f"\n🎃 — Accepting msgs from Load Balancer as localhost:{config.SERVER_SIDE_PORT_3}...\n")
 
 
 # receive messages from load balancer
@@ -28,10 +28,21 @@ def listen_to_client(cs):
                     c_socket.send(payload)
             else:
                 payload.message = payload.message.replace(config.sep, ": ")
+                msg = payload.message
                 payload = pickle.dumps(payload)
                 print("✅ — Publishing packets to client sockets...")
                 for c_socket in c_sockets:
                     c_socket.send(payload)
+
+                peer_name = cs.getpeername()
+                print("💾 — Saving chat history...")
+                conn = sqlite3.connect('app.db')
+                conn.execute("insert into history (group_id, user_id, message) values (?, ?, ?)",
+                             (config.SERVER_SIDE_PORT_3, peer_name[1], msg))
+                conn.commit()
+                print("✔️ — Records created successfully")
+                conn.close()
+                print("✅ — Chat history saved successfully.")
         except Exception as e:
             c_sockets.remove(cs)
 

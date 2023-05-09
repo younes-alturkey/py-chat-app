@@ -1,3 +1,7 @@
+import sqlite3
+import socket
+import pickle
+import config
 from threading import Thread
 import config
 import pickle
@@ -28,10 +32,21 @@ def listen_to_client(cs):
                     c_socket.send(payload)
             else:
                 payload.message = payload.message.replace(config.sep, ": ")
+                msg = payload.message
                 payload = pickle.dumps(payload)
                 print("✅ — Publishing packets to client sockets...")
                 for c_socket in c_sockets:
                     c_socket.send(payload)
+
+                peer_name = cs.getpeername()
+                print("💾 — Saving chat history...")
+                conn = sqlite3.connect('app.db')
+                conn.execute("insert into history (group_id, user_id, message) values (?, ?, ?)",
+                             (config.SERVER_SIDE_PORT_1, peer_name[1], msg))
+                conn.commit()
+                print("✔️ — Records created successfully")
+                conn.close()
+                print("✅ — Chat history saved successfully.")
         except Exception as e:
             c_sockets.remove(cs)
 
