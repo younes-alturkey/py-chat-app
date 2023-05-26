@@ -13,3 +13,6 @@ To run this:
 - Be in the `root directory`
 - Run `sqlite3 app.db`
 - SQL Query `SELECT * FROM HISTORY;` to see saved chats
+
+To run with Docker
+- Run `docker-compose up -d`
