@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  loadbalancer:
+    build: ./loadbalancer
+    command: python3 loadbalancer.py
+    volumes:
+      - .:/loadbalancer
+    ports:
+      - "5555:5555"
+    links:
+      - client
+
+  client:
+    build: ./client
+    command: python3 client.py
+    volumes:
+      - .:/client
+    ports:
+      - "5556:5556"
+
+  server1:
+    build: ./server1
+    command: python3 server1.py
+    volumes:
+      - .:/server1
+    ports:
+      - "7777:7777"
+
+  server2:
+    build: ./server2
+    command: python3 server2.py
+    volumes:
+      - .:/server2
+    ports:
+      - "8888:8888"
+
+  server3:
+    build: ./server3
+    command: python3 server3.py
+    volumes:
+      - .:/server3
+    ports:
+      - "9999:9999"
